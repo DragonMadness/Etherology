@@ -84,6 +84,16 @@ public abstract class AbstractGenerator extends FacingBlock implements Registrab
         return world.isClient ? AbstractGeneratorBlockEntity::clientTicker : AbstractGeneratorBlockEntity::serverTicker;
     }
 
+    @Override
+    protected boolean hasComparatorOutput(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected int getComparatorOutput(BlockState state, World world, BlockPos pos) {
+        return state.get(STALLED) ? 1 : 0;
+    }
+
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
