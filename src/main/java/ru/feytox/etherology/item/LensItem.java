@@ -15,6 +15,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Rarity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
@@ -47,8 +48,8 @@ public abstract class LensItem extends Item {
     private final float streamCost;
     private final float chargeCost;
 
-    protected LensItem(@Nullable StaffLenses lensType, float streamCost, float chargeCost) {
-        super(new Settings().maxCount(1).component(ComponentTypes.LENS, LensComponent.EMPTY).component(ComponentTypes.PSEUDO_DAMAGE, 0));
+    protected LensItem(@Nullable StaffLenses lensType, Rarity rarity, float streamCost, float chargeCost) {
+        super(new Settings().rarity(rarity).maxCount(1).component(ComponentTypes.LENS, LensComponent.EMPTY).component(ComponentTypes.PSEUDO_DAMAGE, 0));
         this.lensType = lensType;
         this.streamCost = streamCost;
         this.chargeCost = chargeCost;

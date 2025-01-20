@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Rarity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -25,7 +26,7 @@ import java.util.function.Supplier;
 public class RedstoneLens extends LensItem {
 
     public RedstoneLens() {
-        super(StaffLenses.REDSTONE, 1.0f, 1.0f);
+        super(StaffLenses.REDSTONE, Rarity.UNCOMMON, 1.0f, 1.0f);
     }
 
     @Override

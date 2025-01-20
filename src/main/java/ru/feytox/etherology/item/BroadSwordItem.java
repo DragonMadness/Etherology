@@ -16,6 +16,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Rarity;
 import net.minecraft.util.UseAction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -33,7 +34,7 @@ public class BroadSwordItem extends TwoHandheldSword implements DoubleModel {
     private static final Identifier SWEEP_ID = EIdentifier.of("broad_sword_sweep");
 
     public BroadSwordItem() {
-        super(ToolMaterials.IRON, new Settings().maxDamage(476).attributeModifiers(SwordItem.createAttributeModifiers(ToolMaterials.IRON, 5, -3.1f)
+        super(ToolMaterials.IRON, new Settings().maxDamage(476).rarity(Rarity.UNCOMMON).attributeModifiers(SwordItem.createAttributeModifiers(ToolMaterials.IRON, 5, -3.1f)
                 .with(EntityAttributes.PLAYER_ENTITY_INTERACTION_RANGE, new EntityAttributeModifier(RANGE_ID, 0.33f, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL), AttributeModifierSlot.MAINHAND)
                 .with(EntityAttributes.PLAYER_SWEEPING_DAMAGE_RATIO, new EntityAttributeModifier(SWEEP_ID, 0.5f, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND)));
     }

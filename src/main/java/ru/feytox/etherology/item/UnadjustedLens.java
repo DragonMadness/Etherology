@@ -3,6 +3,7 @@ package ru.feytox.etherology.item;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Rarity;
 import net.minecraft.world.World;
 import ru.feytox.etherology.magic.lens.LensComponent;
 import ru.feytox.etherology.util.misc.ItemData;
@@ -12,7 +13,7 @@ import java.util.function.Supplier;
 public class UnadjustedLens extends LensItem {
 
     public UnadjustedLens() {
-        super(null, 0.0f, 0.0f);
+        super(null, Rarity.COMMON, 0.0f, 0.0f);
     }
 
     @Override
