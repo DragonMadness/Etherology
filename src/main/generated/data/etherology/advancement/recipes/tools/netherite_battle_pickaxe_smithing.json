@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_material": {
+    "has_netherite_ingot": {
       "conditions": {
         "items": [
           {
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "etherology:netherite_battle_pickaxe"
+        "recipe": "minecraft:netherite_battle_pickaxe_smithing"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_material"
+      "has_netherite_ingot"
     ]
   ],
   "rewards": {
     "recipes": [
-      "etherology:netherite_battle_pickaxe"
+      "minecraft:netherite_battle_pickaxe_smithing"
     ]
   }
 }

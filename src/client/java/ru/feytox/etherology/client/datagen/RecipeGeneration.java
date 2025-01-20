@@ -37,6 +37,7 @@ import ru.feytox.etherology.util.misc.EIdentifier;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 import static net.minecraft.block.Blocks.*;
 import static net.minecraft.recipe.book.RecipeCategory.*;
@@ -368,16 +369,18 @@ public class RecipeGeneration extends FabricRecipeProvider {
     }
 
     private void registerPicks(RecipeExporter exporter) {
-        registerTools(ToolItems.BATTLE_PICKAXES, (tool, material, criterionPredicate) ->
+        var picksWithoutNetherite = Arrays.stream(BATTLE_PICKAXES).filter(item -> !item.equals(NETHERITE_BATTLE_PICKAXE));
+        registerTools(picksWithoutNetherite, (tool, material, criterionPredicate) ->
                 ShapedRecipeJsonBuilder.create(TOOLS, tool).input('I', Items.STICK).input('M', material)
                 .pattern("MM ")
                 .pattern(" IM")
                 .pattern(" I ")
                 .criterion("has_material", conditionsFromItemPredicates(criterionPredicate)).offerTo(exporter));
+        offerNetheriteUpgradeRecipe(exporter, DIAMOND_BATTLE_PICKAXE, TOOLS, NETHERITE_BATTLE_PICKAXE);
     }
 
-    private void registerTools(Item[] toolsArr, TriConsumer<ToolItem, Ingredient, ItemPredicate> registrar) {
-        Arrays.stream(toolsArr).forEach(item -> {
+    private void registerTools(Stream<Item> toolsStream, TriConsumer<ToolItem, Ingredient, ItemPredicate> registrar) {
+        toolsStream.forEach(item -> {
             ToolItem tool = (ToolItem) item;
             Ingredient material = tool.getMaterial().getRepairIngredient();
             Item[] materialItems = Arrays.stream(material.getMatchingStacks()).map(ItemStack::getItem).toArray(Item[]::new);
