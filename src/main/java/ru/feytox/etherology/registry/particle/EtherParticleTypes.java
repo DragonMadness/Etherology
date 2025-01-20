@@ -33,6 +33,7 @@ public class EtherParticleTypes {
     public static final FeyParticleType<ScalableParticleEffect> SCALABLE_SWEEP = register("scalable_sweep", ScalableParticleEffect::new);
     public static final FeyParticleType<SimpleParticleEffect> REDSTONE_FLASH = register("redstone_flash", SimpleParticleEffect::new);
     public static final FeyParticleType<SimpleParticleEffect> REDSTONE_STREAM = register("redstone_stream", SimpleParticleEffect::new);
+    public static final FeyParticleType<SealParticleEffect> SEAL = register("seal", SealParticleEffect::new);
 
     private static <T extends ParticleEffect> FeyParticleType<T> register(String name, FeyParticleEffect.DummyConstructor<T> dummyConstructor) {
         FeyParticleType<T> particleType = new FeyParticleType<>(false, dummyConstructor);

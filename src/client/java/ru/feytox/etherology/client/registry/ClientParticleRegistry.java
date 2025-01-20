@@ -37,6 +37,7 @@ public class ClientParticleRegistry {
         register(SCALABLE_SWEEP, ScalableSweepParticle::new);
         register(REDSTONE_FLASH, RedstoneFlashParticle::new);
         register(REDSTONE_STREAM, RedstoneStreamParticle::new);
+        register(SEAL, SealParticle::new);
     }
 
     private static <T extends ParticleEffect, P extends Particle> void register(ParticleType<T> particleType, ParticleConstructor<T, P> particleConstructor) {

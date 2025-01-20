@@ -13,6 +13,7 @@ import ru.feytox.etherology.block.jewelryTable.JewelryBlockEntity;
 import ru.feytox.etherology.block.levitator.LevitatorBlockEntity;
 import ru.feytox.etherology.block.matrix.MatrixBlockEntity;
 import ru.feytox.etherology.block.seal.SealBlockEntity;
+import ru.feytox.etherology.block.sedimentary.SedimentaryStoneBlockEntity;
 import ru.feytox.etherology.block.tuningFork.TuningForkBlockEntity;
 import ru.feytox.etherology.client.block.brewingCauldron.BrewingCauldronClient;
 import ru.feytox.etherology.client.block.channel.EtherealChannelClient;
@@ -22,6 +23,7 @@ import ru.feytox.etherology.client.block.jewelryTable.JewelryTableClient;
 import ru.feytox.etherology.client.block.levitator.LevitatorBlockClient;
 import ru.feytox.etherology.client.block.matrix.MatrixBlockClient;
 import ru.feytox.etherology.client.block.seal.SealBlockClient;
+import ru.feytox.etherology.client.block.sedimentary.SedimentaryBlockClient;
 import ru.feytox.etherology.client.block.tuningFork.TuningForkClient;
 import ru.feytox.etherology.client.util.ClientTickableBlock;
 import ru.feytox.etherology.util.misc.TickableBlockEntity;
@@ -43,6 +45,7 @@ public class ClientBlockTickers {
         addTicker(SealBlockEntity.class, SealBlockClient::clientTick);
         addTicker(TuningForkBlockEntity.class, TuningForkClient::clientTick);
         addTicker(LevitatorBlockEntity.class, LevitatorBlockClient::clientTick);
+        addTicker(SedimentaryStoneBlockEntity.class, SedimentaryBlockClient::clientTick);
     }
 
     @SuppressWarnings("unchecked")
