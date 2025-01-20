@@ -48,7 +48,7 @@ public class ForestLanternBlock extends HorizontalFacingBlock implements Registr
             if (world.isClient)
                 return ActionResult.PASS;
 
-            var pos = player.getBlockPos().down();
+            var pos = player.getSteppingPos();
             var blockState = world.getBlockState(pos);
             if (!blockState.isOf(DecoBlocks.FOREST_LANTERN))
                 return ActionResult.PASS;
