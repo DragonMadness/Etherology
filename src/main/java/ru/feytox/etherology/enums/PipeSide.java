@@ -15,6 +15,15 @@ public enum PipeSide implements StringIdentifiable {
         return this.equals(OUT);
     }
 
+    @Deprecated
+    public boolean isNotEmpty() {
+        return !this.equals(EMPTY);
+    }
+
+    public boolean isEmpty() {
+        return this.equals(EMPTY);
+    }
+
     @Override
     public String asString() {
         return this.name().toLowerCase();

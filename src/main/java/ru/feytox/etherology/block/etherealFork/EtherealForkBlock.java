@@ -9,22 +9,20 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
-import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
+import ru.feytox.etherology.block.etherealChannel.ChannelShapes;
 import ru.feytox.etherology.enums.PipeSide;
 import ru.feytox.etherology.magic.ether.EtherFork;
 import ru.feytox.etherology.magic.ether.EtherPipe;
 import ru.feytox.etherology.util.misc.RegistrableBlock;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static net.minecraft.state.property.Properties.WATERLOGGED;
 import static ru.feytox.etherology.block.etherealChannel.EtherealChannel.*;
@@ -32,42 +30,25 @@ import static ru.feytox.etherology.registry.block.EBlocks.ETHEREAL_FORK_BLOCK_EN
 
 public class EtherealForkBlock extends Block implements RegistrableBlock, BlockEntityProvider, Waterloggable {
 
-    private static final VoxelShape CENTER_SHAPE;
+    public static final VoxelShape CENTER_SHAPE;
 
     public EtherealForkBlock() {
         super(Settings.create().mapColor(MapColor.BROWN).strength(1.0F).nonOpaque());
-        setDefaultState(getDefaultState()
+
+        var defaultState = getDefaultState()
                 .with(ACTIVATED, false)
-                .with(NORTH, PipeSide.EMPTY)
-                .with(SOUTH, PipeSide.EMPTY)
-                .with(WEST, PipeSide.EMPTY)
-                .with(EAST, PipeSide.EMPTY)
-                .with(UP, PipeSide.EMPTY)
-                .with(DOWN, PipeSide.EMPTY)
-                .with(WATERLOGGED, false));
+                .with(WATERLOGGED, false);
+        setDefaultState(ChannelShapes.addSidesToState(defaultState));
     }
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        List<VoxelShape> shapes = new ArrayList<>();
-        return getShape(state, shapes, CENTER_SHAPE);
-    }
-
-    public static VoxelShape getShape(BlockState state, List<VoxelShape> shapes, VoxelShape centerShape) {
-        if (!state.get(NORTH).equals(PipeSide.EMPTY)) shapes.add(NORTH_SHAPE);
-        if (!state.get(SOUTH).equals(PipeSide.EMPTY)) shapes.add(SOUTH_SHAPE);
-        if (!state.get(EAST).equals(PipeSide.EMPTY)) shapes.add(EAST_SHAPE);
-        if (!state.get(WEST).equals(PipeSide.EMPTY)) shapes.add(WEST_SHAPE);
-        if (!state.get(UP).equals(PipeSide.EMPTY)) shapes.add(UP_SHAPE);
-        if (!state.get(DOWN).equals(PipeSide.EMPTY)) shapes.add(DOWN_SHAPE);
-        VoxelShape branchShape = shapes.stream().reduce(centerShape, VoxelShapes::union);
-
-        return VoxelShapes.combineAndSimplify(centerShape, branchShape, BooleanBiFunction.OR);
+        return ChannelShapes.getShape(CENTER_SHAPE, state);
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(ACTIVATED, NORTH, SOUTH, WEST, EAST, UP, DOWN, WATERLOGGED);
+        builder.add(ACTIVATED, ChannelShapes.NORTH, ChannelShapes.SOUTH, ChannelShapes.WEST, ChannelShapes.EAST, ChannelShapes.UP, ChannelShapes.DOWN, WATERLOGGED);
     }
 
     @Nullable

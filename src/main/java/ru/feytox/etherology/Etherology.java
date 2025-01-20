@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.server.world.ServerWorld;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
+import ru.feytox.etherology.block.etherealChannel.ChannelShapes;
 import ru.feytox.etherology.block.forestLantern.ForestLanternBlock;
 import ru.feytox.etherology.commands.DevCommands;
 import ru.feytox.etherology.magic.lens.LensModifier;
@@ -58,6 +59,7 @@ public class Etherology implements ModInitializer {
         ComponentTypes.registerAll();
         ForestLanternBlock.registerJumpEvent();
         EtherParticleTypes.registerAll();
+        ChannelShapes.cacheAll();
 
         ServerWorldEvents.LOAD.register((server, world) -> loadedWorlds.add(world));
         ServerWorldEvents.UNLOAD.register((server, world) -> loadedWorlds.remove(world));

@@ -1,6 +1,5 @@
 package ru.feytox.etherology.block.etherealChannel;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -33,10 +32,8 @@ import ru.feytox.etherology.registry.block.EBlocks;
 import ru.feytox.etherology.util.misc.RegistrableBlock;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static net.minecraft.state.property.Properties.WATERLOGGED;
-import static ru.feytox.etherology.block.etherealFork.EtherealForkBlock.getShape;
 import static ru.feytox.etherology.registry.block.EBlocks.ETHEREAL_CHANNEL_BLOCK_ENTITY;
 
 public class EtherealChannel extends Block implements RegistrableBlock, BlockEntityProvider, Waterloggable {
@@ -44,40 +41,24 @@ public class EtherealChannel extends Block implements RegistrableBlock, BlockEnt
     public static final DirectionProperty FACING = FacingBlock.FACING;
     public static final BooleanProperty IN_CASE = BooleanProperty.of("in_case");
     public static final BooleanProperty IS_CROSS = BooleanProperty.of("is_cross");
-    public static final EnumProperty<PipeSide> NORTH = EnumProperty.of("north", PipeSide.class);
-    public static final EnumProperty<PipeSide> EAST = EnumProperty.of("east", PipeSide.class);
-    public static final EnumProperty<PipeSide> WEST = EnumProperty.of("west", PipeSide.class);
-    public static final EnumProperty<PipeSide> SOUTH = EnumProperty.of("south", PipeSide.class);
-    public static final EnumProperty<PipeSide> UP = EnumProperty.of("up", PipeSide.class);
-    public static final EnumProperty<PipeSide> DOWN = EnumProperty.of("down", PipeSide.class);
 
-    private static final VoxelShape CENTER_SHAPE;
-    public static final VoxelShape NORTH_SHAPE;
-    public static final VoxelShape SOUTH_SHAPE;
-    public static final VoxelShape EAST_SHAPE;
-    public static final VoxelShape WEST_SHAPE;
-    public static final VoxelShape DOWN_SHAPE;
-    public static final VoxelShape UP_SHAPE;
+    public static final VoxelShape CENTER_SHAPE;
 
     public EtherealChannel() {
         super(Settings.create().mapColor(MapColor.BROWN).strength(1.0f).nonOpaque().solid());
-        setDefaultState(getDefaultState()
+
+        var defaultState = getDefaultState()
                 .with(ACTIVATED, false)
                 .with(FACING, Direction.NORTH)
                 .with(IN_CASE, false)
                 .with(IS_CROSS, false)
-                .with(NORTH, PipeSide.EMPTY)
-                .with(SOUTH, PipeSide.EMPTY)
-                .with(WEST, PipeSide.EMPTY)
-                .with(EAST, PipeSide.EMPTY)
-                .with(UP, PipeSide.EMPTY)
-                .with(DOWN, PipeSide.EMPTY)
-                .with(WATERLOGGED, false));
+                .with(WATERLOGGED, false);
+        setDefaultState(ChannelShapes.addSidesToState(defaultState));
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, ACTIVATED, IN_CASE, IS_CROSS, NORTH, SOUTH, WEST, EAST, UP, DOWN, WATERLOGGED);
+        builder.add(FACING, ACTIVATED, IN_CASE, IS_CROSS, ChannelShapes.NORTH, ChannelShapes.SOUTH, ChannelShapes.WEST, ChannelShapes.EAST, ChannelShapes.UP, ChannelShapes.DOWN, WATERLOGGED);
     }
 
     @Override
@@ -95,8 +76,7 @@ public class EtherealChannel extends Block implements RegistrableBlock, BlockEnt
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         if (state.get(IN_CASE)) return VoxelShapes.fullCube();
-        List<VoxelShape> shapes = new ObjectArrayList<>();
-        return getShape(state, shapes, CENTER_SHAPE);
+        return ChannelShapes.getShape(CENTER_SHAPE, state);
     }
 
     @Nullable
@@ -171,22 +151,22 @@ public class EtherealChannel extends Block implements RegistrableBlock, BlockEnt
     public static EnumProperty<PipeSide> getAsIn(Direction direction) {
         switch (direction) {
             case SOUTH -> {
-                return NORTH;
+                return ChannelShapes.NORTH;
             }
             case WEST -> {
-                return EAST;
+                return ChannelShapes.EAST;
             }
             case EAST -> {
-                return WEST;
+                return ChannelShapes.WEST;
             }
             case DOWN -> {
-                return UP;
+                return ChannelShapes.UP;
             }
             case UP -> {
-                return DOWN;
+                return ChannelShapes.DOWN;
             }
             default -> {
-                return SOUTH;
+                return ChannelShapes.SOUTH;
             }
         }
     }
@@ -197,22 +177,22 @@ public class EtherealChannel extends Block implements RegistrableBlock, BlockEnt
     public static EnumProperty<PipeSide> getAsOut(Direction direction) {
         switch (direction) {
             case SOUTH -> {
-                return SOUTH;
+                return ChannelShapes.SOUTH;
             }
             case WEST -> {
-                return WEST;
+                return ChannelShapes.WEST;
             }
             case EAST -> {
-                return EAST;
+                return ChannelShapes.EAST;
             }
             case DOWN -> {
-                return DOWN;
+                return ChannelShapes.DOWN;
             }
             case UP -> {
-                return UP;
+                return ChannelShapes.UP;
             }
             default -> {
-                return NORTH;
+                return ChannelShapes.NORTH;
             }
         }
     }
@@ -245,11 +225,6 @@ public class EtherealChannel extends Block implements RegistrableBlock, BlockEnt
 
     static {
         CENTER_SHAPE = createCuboidShape(5, 5, 5, 11, 11, 11);
-        NORTH_SHAPE = createCuboidShape(5, 5, 0, 11, 11, 5);
-        SOUTH_SHAPE = createCuboidShape(5, 5, 11, 11, 11, 16);
-        WEST_SHAPE = createCuboidShape(0, 5, 5, 5, 11, 11);
-        EAST_SHAPE = createCuboidShape(11, 5, 5, 16, 11, 11);
-        UP_SHAPE = createCuboidShape(5, 11, 5, 11, 16, 11);
-        DOWN_SHAPE = createCuboidShape(5, 0, 5, 11, 5, 11);
+
     }
 }

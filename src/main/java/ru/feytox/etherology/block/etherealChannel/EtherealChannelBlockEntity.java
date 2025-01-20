@@ -17,7 +17,7 @@ import ru.feytox.etherology.util.misc.TickableBlockEntity;
 
 import java.util.List;
 
-import static ru.feytox.etherology.block.etherealChannel.EtherealChannel.*;
+import static ru.feytox.etherology.block.etherealChannel.EtherealChannel.ACTIVATED;
 import static ru.feytox.etherology.registry.block.EBlocks.ETHEREAL_CHANNEL_BLOCK_ENTITY;
 
 public class EtherealChannelBlockEntity extends TickableBlockEntity implements EtherPipe, EtherDisplay {
@@ -71,7 +71,7 @@ public class EtherealChannelBlockEntity extends TickableBlockEntity implements E
     @Nullable
     @Override
     public Direction getOutputSide() {
-        List<EnumProperty<PipeSide>> properties = List.of(NORTH, SOUTH, EAST, WEST, UP, DOWN);
+        List<EnumProperty<PipeSide>> properties = List.of(ChannelShapes.NORTH, ChannelShapes.SOUTH, ChannelShapes.EAST, ChannelShapes.WEST, ChannelShapes.UP, ChannelShapes.DOWN);
         BlockState state = getCachedState();
         for (EnumProperty<PipeSide> property : properties) {
             if (state.get(property).isOutput()) return Direction.byName(property.getName());

@@ -4,7 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import ru.feytox.etherology.block.etherealChannel.EtherealChannel;
+import ru.feytox.etherology.block.etherealChannel.ChannelShapes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +22,12 @@ public interface EtherFork extends EtherPipe {
     default List<Direction> getOutputSides(BlockState state) {
         List<Direction> outputSides = new ArrayList<>();
 
-        if (state.get(EtherealChannel.NORTH).isOutput()) outputSides.add(Direction.NORTH);
-        if (state.get(EtherealChannel.SOUTH).isOutput()) outputSides.add(Direction.SOUTH);
-        if (state.get(EtherealChannel.WEST).isOutput()) outputSides.add(Direction.WEST);
-        if (state.get(EtherealChannel.EAST).isOutput()) outputSides.add(Direction.EAST);
-        if (state.get(EtherealChannel.DOWN).isOutput()) outputSides.add(Direction.DOWN);
-        if (state.get(EtherealChannel.UP).isOutput()) outputSides.add(Direction.UP);
+        if (state.get(ChannelShapes.NORTH).isOutput()) outputSides.add(Direction.NORTH);
+        if (state.get(ChannelShapes.SOUTH).isOutput()) outputSides.add(Direction.SOUTH);
+        if (state.get(ChannelShapes.WEST).isOutput()) outputSides.add(Direction.WEST);
+        if (state.get(ChannelShapes.EAST).isOutput()) outputSides.add(Direction.EAST);
+        if (state.get(ChannelShapes.DOWN).isOutput()) outputSides.add(Direction.DOWN);
+        if (state.get(ChannelShapes.UP).isOutput()) outputSides.add(Direction.UP);
 
         return outputSides;
     }
