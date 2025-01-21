@@ -41,7 +41,8 @@
     "TreeConfiguredFeaturesAccessor",
     "TreeDecoratorTypeAccessor",
     "TrunkPlacerTypeAccessor",
-    "VibrationListenerAccessor"
+    "VibrationListenerAccessor",
+    "WallMountedBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

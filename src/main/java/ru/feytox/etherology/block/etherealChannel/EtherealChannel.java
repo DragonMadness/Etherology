@@ -31,7 +31,7 @@ import ru.feytox.etherology.magic.ether.EtherStorage;
 import ru.feytox.etherology.registry.block.EBlocks;
 import ru.feytox.etherology.util.misc.RegistrableBlock;
 
-import java.util.ArrayList;
+import java.util.stream.Stream;
 
 import static net.minecraft.state.property.Properties.WATERLOGGED;
 import static ru.feytox.etherology.registry.block.EBlocks.ETHEREAL_CHANNEL_BLOCK_ENTITY;
@@ -64,7 +64,8 @@ public class EtherealChannel extends Block implements RegistrableBlock, BlockEnt
     @Override
     protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (state.get(IN_CASE)) return super.onUseWithItem(stack, state, world, pos, player, hand, hit);
-        if (!stack.isOf(EBlocks.CHANNEL_CASE.getItem())) return super.onUseWithItem(stack, state, world, pos, player, hand, hit);
+        if (!stack.isOf(EBlocks.CHANNEL_CASE.getItem()))
+            return super.onUseWithItem(stack, state, world, pos, player, hand, hit);
 
         if (!player.isCreative()) stack.decrement(1);
         world.setBlockState(pos, state.with(IN_CASE, true));
@@ -109,26 +110,24 @@ public class EtherealChannel extends Block implements RegistrableBlock, BlockEnt
                 .with(IN_CASE, inCase)
                 .with(WATERLOGGED, fluid == Fluids.WATER);
 
-        var directions = new ArrayList<Direction>();
-        directions.addAll(Direction.Type.HORIZONTAL.stream().toList());
-        directions.addAll(Direction.Type.VERTICAL.stream().toList());
+        var inputSides = Stream.concat(Direction.Type.HORIZONTAL.stream(), Direction.Type.VERTICAL.stream())
+                .filter(direction -> isNeighborOutput(world, pos, direction) && !pipeDirection.equals(direction))
+                .map(Direction::getOpposite)
+                .map(EtherealChannel::getAsIn)
+                .toList();
 
-        var inputCount = 0;
-        for (Direction direction: directions) {
-            boolean result = isNeighborOutput(world, pos, direction);
-            if (!result || state.get(FACING).equals(direction)) continue;
+        for (var inputSide : inputSides)
+            state = state.with(inputSide, PipeSide.IN);
 
-            inputCount++;
-            var inSideProperty = getAsIn(direction.getOpposite());
-            state = state.with(inSideProperty, PipeSide.IN);
-        }
-
-        return getFacingState(state, inputCount);
+        return getFacingState(state, inputSides.size());
     }
 
     public boolean isNeighborOutput(BlockView world, BlockPos pos, Direction direction) {
-        BlockPos checkPos = pos.add(direction.getVector());
-        if (!(world.getBlockEntity(checkPos) instanceof EtherStorage storage)) return false;
+        var checkPos = pos.add(direction.getVector());
+        if (world.getBlockState(checkPos).isOf(Blocks.LEVER))
+            return true;
+        if (!(world.getBlockEntity(checkPos) instanceof EtherStorage storage))
+            return false;
 
         return storage.isOutputSide(direction.getOpposite());
     }
@@ -199,9 +198,9 @@ public class EtherealChannel extends Block implements RegistrableBlock, BlockEnt
 
     @Override
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
-        int power = world.getReceivedRedstonePower(pos);
-        boolean result = power > 0;
-        world.setBlockState(pos, getChannelState(world, state, pos).with(ACTIVATED, result));
+        var power = world.getReceivedStrongRedstonePower(pos);
+        var powered = power > 0;
+        world.setBlockState(pos, getChannelState(world, state, pos).with(ACTIVATED, powered));
     }
 
     @Nullable
