@@ -11,6 +11,8 @@
   "item.etherology.pattern_tablet.ingredients": "Слитки",
   "block.etherology.seal": "Божественная печать",
   "gui.etherology.complete": "Завершить",
+  "lore.etherology.corruption_bucket.emptying": "При опустошении:",
+  "lore.etherology.corruption_bucket.increment": "+ %d Порчи",
 
   "subtitles.etherology.small_lightning": "Маленькая молния",
   "subtitles.etherology.armillary_matrix_work": "Армиллярная матрица шумит",

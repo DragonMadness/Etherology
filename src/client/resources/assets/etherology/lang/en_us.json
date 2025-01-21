@@ -167,6 +167,8 @@
   "item.minecraft.potion.effect.vital_energy": "Potion of Vital Energy",
   "item.minecraft.splash_potion.effect.vital_energy": "Splash Potion of Vital Energy",
   "item.minecraft.tipped_arrow.effect.vital_energy": "Arrow of Vital Energy",
+  "lore.etherology.corruption_bucket.emptying": "When Emptying:",
+  "lore.etherology.corruption_bucket.increment": "+ %d Corruption",
   "lore.etherology.primoshard": "%s",
   "lore.etherology.spill_barrel.empty": "Empty",
   "lore.etherology.spill_barrel.filled": "Filled with a \"%s\" in the amount of %dx",
