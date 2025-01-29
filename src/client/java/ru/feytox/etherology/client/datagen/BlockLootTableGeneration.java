@@ -2,6 +2,7 @@ package ru.feytox.etherology.client.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.minecraft.block.Block;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.BlockStatePropertyLootCondition;
@@ -9,7 +10,9 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.predicate.StatePredicate;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.state.property.IntProperty;
 import ru.feytox.etherology.block.etherealChannel.EtherealChannel;
+import ru.feytox.etherology.block.forestLantern.ForestLanternBlock;
 import ru.feytox.etherology.registry.block.AutoBlockLootTable;
 import ru.feytox.etherology.registry.item.DecoBlockItems;
 import ru.feytox.etherology.util.misc.RandomChanceWithFortuneCondition;
@@ -52,6 +55,7 @@ public class BlockLootTableGeneration extends FabricBlockLootTableProvider {
         addPottedPlantDrops(POTTED_BEAMER);
         addPottedPlantDrops(POTTED_THUJA);
         addPottedPlantDrops(POTTED_PEACH_SAPLING);
+        addDrop(FOREST_LANTERN, dropsWithProperty(FOREST_LANTERN, ForestLanternBlock.AGE, ForestLanternBlock.MAX_AGE));
 
         addDrop(LIGHTELET, this::shortPlantDrops);
     }
@@ -66,5 +70,9 @@ public class BlockLootTableGeneration extends FabricBlockLootTableProvider {
                         .with(this.applyExplosionDecay(CHANNEL_CASE, ItemEntry.builder(CHANNEL_CASE)))
                         .conditionally(BlockStatePropertyLootCondition.builder(ETHEREAL_CHANNEL)
                                 .properties(StatePredicate.Builder.create().exactMatch(EtherealChannel.IN_CASE, true)))));
+    }
+
+    private LootTable.Builder dropsWithProperty(Block drop, IntProperty property, int value) {
+        return LootTable.builder().pool(this.addSurvivesExplosionCondition(drop, LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0F)).with(ItemEntry.builder(drop).conditionally(BlockStatePropertyLootCondition.builder(drop).properties(StatePredicate.Builder.create().exactMatch(property, value))))));
     }
 }

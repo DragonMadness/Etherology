@@ -167,6 +167,8 @@
   "item.minecraft.potion.effect.vital_energy": "Зелье духовного восстановления",
   "item.minecraft.splash_potion.effect.vital_energy": "Взрывное зелье духовного восстановления",
   "item.minecraft.tipped_arrow.effect.vital_energy": "Стрела духовного восстановления",
+  "lore.etherology.corruption_bucket.emptying": "При опустошении:",
+  "lore.etherology.corruption_bucket.increment": "+ %d Порчи",
   "lore.etherology.primoshard": "%s",
   "lore.etherology.spill_barrel.empty": "Пусто",
   "lore.etherology.spill_barrel.filled": "Наполнена \"%s\" в объёме %dx",

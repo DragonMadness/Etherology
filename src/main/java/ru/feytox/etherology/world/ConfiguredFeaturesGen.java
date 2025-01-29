@@ -28,6 +28,7 @@ import ru.feytox.etherology.world.trees.BirchBranchesDecorator;
 import ru.feytox.etherology.world.trees.PeachLanternDecorator;
 import ru.feytox.etherology.world.trees.PeachWeepingDecorator;
 
+import java.util.Collections;
 import java.util.List;
 
 import static net.minecraft.world.gen.feature.ConfiguredFeatures.register;
@@ -36,6 +37,7 @@ import static ru.feytox.etherology.registry.world.TreesRegistry.peach;
 @UtilityClass
 public class ConfiguredFeaturesGen {
     public static final RegistryKey<ConfiguredFeature<?,?>> PEACH_TREE = of("peach_tree");
+    public static final RegistryKey<ConfiguredFeature<?,?>> PEACH_TREE_SAPLING = of("peach_tree_sapling");
     public static final RegistryKey<ConfiguredFeature<?,?>> BIRCH_BRANCH_TREE = of("birch_branch_tree");
     public static final RegistryKey<ConfiguredFeature<?,?>> GOLDEN_FOREST_FLOWERS = of("golden_forest_flowers");
     public static final RegistryKey<ConfiguredFeature<?,?>> PATCH_LIGHTELET = of("patch_lightelet");
@@ -53,6 +55,8 @@ public class ConfiguredFeaturesGen {
     public static void registerFeatures(Registerable<ConfiguredFeature<?, ?>> context) {
         register(context, PEACH_TREE, Feature.TREE,
                 peach().decorators(ImmutableList.of(PeachWeepingDecorator.INSTANCE, PeachLanternDecorator.INSTANCE)).build());
+        register(context, PEACH_TREE_SAPLING, Feature.TREE,
+                peach().decorators(Collections.singletonList(PeachWeepingDecorator.INSTANCE)).build());
         register(context, BIRCH_BRANCH_TREE, Feature.TREE,
                 TreeConfiguredFeaturesAccessor.callSuperBirch().decorators(ImmutableList.of(BirchBranchesDecorator.INSTANCE, new BeehiveTreeDecorator(0.05f))).build());
         register(context, GOLDEN_FOREST_FLOWERS, Feature.SIMPLE_RANDOM_SELECTOR, new SimpleRandomFeatureConfig(RegistryEntryList.of(

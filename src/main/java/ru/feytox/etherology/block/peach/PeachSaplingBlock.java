@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public class PeachSaplingBlock extends SaplingBlock implements RegistrableBlock {
 
-    private static final SaplingGenerator PEACH_GENERATOR = new SaplingGenerator("etherology:peach", Optional.empty(), Optional.of(ConfiguredFeaturesGen.PEACH_TREE), Optional.empty());
+    private static final SaplingGenerator PEACH_GENERATOR = new SaplingGenerator("etherology:peach", Optional.empty(), Optional.of(ConfiguredFeaturesGen.PEACH_TREE_SAPLING), Optional.empty());
 
     public PeachSaplingBlock() {
         super(PEACH_GENERATOR, Settings.copy(Blocks.ACACIA_SAPLING));

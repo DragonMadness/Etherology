@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import ru.feytox.etherology.registry.block.DecoBlocks;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -17,7 +18,7 @@ public class ShearsItemMixin {
 
     @ModifyReturnValue(method = "createToolComponent", at = @At("RETURN"))
     private static ToolComponent injectForestLanternSpeed(ToolComponent original) {
-        List<ToolComponent.Rule> rules = Stream.concat(original.rules().stream(), Stream.of(ToolComponent.Rule.of(List.of(DecoBlocks.FOREST_LANTERN), 15.0f))).toList();
+        List<ToolComponent.Rule> rules = Stream.concat(original.rules().stream(), Stream.of(ToolComponent.Rule.of(Collections.singletonList(DecoBlocks.FOREST_LANTERN), 15.0f))).toList();
         return new ToolComponent(rules, original.defaultMiningSpeed(), original.damagePerBlock());
     }
 

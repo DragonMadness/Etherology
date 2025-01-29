@@ -11,6 +11,15 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "etherology:forest_lantern",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "age": "4"
+              }
+            }
+          ],
           "name": "etherology:forest_lantern"
         }
       ],

@@ -1,0 +1,34 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"particle": "etherology:block/forest_lantern_0",
+		"forest_lantern": "etherology:block/forest_lantern_0"
+	},
+	"elements": [
+		{
+			"from": [8, 4, 13],
+			"to": [8, 12, 16],
+			"rotation": {"angle": 45, "axis": "z", "origin": [8, 8, 16], "rescale": true},
+			"faces": {
+				"east": {"uv": [16, 4, 13, 12], "texture": "#forest_lantern"},
+				"west": {"uv": [13, 4, 16, 12], "texture": "#forest_lantern"}
+			}
+		},
+		{
+			"from": [4, 8, 13],
+			"to": [12, 8, 16],
+			"rotation": {"angle": 45, "axis": "z", "origin": [8, 8, 16], "rescale": true},
+			"faces": {
+				"up": {"uv": [13, 4, 16, 12], "rotation": 90, "texture": "#forest_lantern"},
+				"down": {"uv": [16, 4, 13, 12], "rotation": 90, "texture": "#forest_lantern"}
+			}
+		}
+	],
+	"display": {
+		"head": {
+			"rotation": [0, -90, 0],
+			"translation": [12.25, 0, 0],
+			"scale": [0.75, 0.75, 0.75]
+		}
+	}
+}
