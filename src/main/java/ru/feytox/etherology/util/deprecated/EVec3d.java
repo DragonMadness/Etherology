@@ -38,4 +38,8 @@ public class EVec3d {
         result.addAll(lineOf(leftTop, rightTop, step));
         return result;
     }
+
+    public static Vec3d abs(Vec3d vec) {
+        return new Vec3d(Math.abs(vec.x), Math.abs(vec.y), Math.abs(vec.z));
+    }
 }

@@ -23,10 +23,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
-import ru.feytox.etherology.block.levitator.LevitatorBlockEntity;
 import ru.feytox.etherology.magic.seal.SealType;
 import ru.feytox.etherology.registry.block.EBlocks;
 import ru.feytox.etherology.util.misc.HideSurvivalBlockOutline;
+import ru.feytox.etherology.util.misc.PlayerUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,7 +67,7 @@ public class SealBlock extends Block implements BlockEntityProvider, HideSurviva
         collisionVec = collisionVec.multiply(1 / Math.max(0.001d, collisionVec.length()))
                 .multiply(0.1d);
 
-        LevitatorBlockEntity.applySpeed(world, entity, collisionVec);
+        PlayerUtil.addAndUpdateVelocity(entity, collisionVec);
     }
 
     @Override

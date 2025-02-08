@@ -11,9 +11,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
@@ -129,12 +127,7 @@ public class ShockwaveUtil {
         if (!wasDamaged) return;
 
         takeKnockback(target, knockback * attackK, attackVec, vecLen);
-
-        if (target instanceof ServerPlayerEntity serverPlayerTarget && target.velocityModified) {
-            serverPlayerTarget.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(target));
-            target.velocityModified = false;
-            target.setVelocity(oldVelocity);
-        }
+        PlayerUtil.updateVelocity(target, oldVelocity);
     }
 
     private static void takeKnockback(LivingEntity target, double strength, Vec3d attackVec, double vecLen) {

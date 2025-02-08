@@ -1,26 +1,16 @@
 package ru.feytox.etherology.block.levitator;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.*;
-import net.minecraft.world.World;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
 import ru.feytox.etherology.magic.ether.EtherStorage;
-import ru.feytox.etherology.particle.effects.LightParticleEffect;
-import ru.feytox.etherology.particle.subtype.LightSubtype;
-import ru.feytox.etherology.registry.particle.EtherParticleTypes;
 import ru.feytox.etherology.util.misc.TickableBlockEntity;
 
-import java.util.List;
-
-import static net.minecraft.state.property.Properties.FACING;
 import static net.minecraft.state.property.Properties.POWER;
-import static ru.feytox.etherology.block.levitator.LevitatorBlock.PUSHING;
 import static ru.feytox.etherology.registry.block.EBlocks.LEVITATOR_BLOCK_ENTITY;
 
 public class LevitatorBlockEntity extends TickableBlockEntity implements EtherStorage {
@@ -34,88 +24,25 @@ public class LevitatorBlockEntity extends TickableBlockEntity implements EtherSt
 
     @Override
     public void serverTick(ServerWorld world, BlockPos blockPos, BlockState state) {
-        if (tickFuel(world, blockPos, state)) {
-            tickLevitation(world, blockPos, state);
-        }
+        tickFuel(world, blockPos, state);
         markDirty();
     }
 
-    private boolean tickFuel(ServerWorld world, BlockPos blockPos, BlockState state) {
+    private void tickFuel(ServerWorld world, BlockPos blockPos, BlockState state) {
         fuel = Math.max(0, fuel - 1);
-        if (fuel > 0) return true;
+        if (fuel > 0) return;
         int power = state.get(POWER);
-        if (power <= 0) return false;
+        if (power <= 0) return;
 
         boolean wasFueled = state.get(LevitatorBlock.WITH_FUEL);
         if (storedEther > 0) {
             decrement(1);
             fuel = FUEL_TIME;
             if (!wasFueled) world.setBlockState(blockPos, state.with(LevitatorBlock.WITH_FUEL, true));
-            return true;
+            return;
         }
 
         world.setBlockState(blockPos, state.with(LevitatorBlock.WITH_FUEL, false));
-        return false;
-    }
-
-    public void tickLevitation(World world, BlockPos pos, BlockState state) {
-        boolean hasFuel = state.get(LevitatorBlock.WITH_FUEL);
-        if (!hasFuel) return;
-        int power = state.get(POWER);
-        if (power <= 0) return;
-
-        Vec3i directionVec = state.get(FACING).getVector().multiply(-1);
-        int length = MathHelper.ceil(power / 2f);
-        BlockBox levitationBlockBox = BlockBox.create(pos.add(directionVec), pos.add(directionVec.multiply(length)));
-        Box levitationBox = Box.from(levitationBlockBox);
-
-        boolean isPushing = state.get(PUSHING);
-        if (world.isClient && world.getTime() % 10 == 0) {
-            BlockPos startPos = isPushing ? pos.add(directionVec) : pos.add(directionVec.multiply(length));
-            BlockPos targetPos = isPushing ? pos.add(directionVec.multiply(length+1)) : pos;
-            tickParticles(world, startPos, targetPos, isPushing);
-        }
-
-        List<Entity> entities = world.getNonSpectatingEntities(Entity.class, levitationBox);
-        if (entities.isEmpty()) return;
-
-        Vec3d leviVec = Vec3d.of(directionVec);
-        Vec3d maxPos = pos.toCenterPos().add(leviVec.multiply(0.5));
-        leviVec = isPushing ? leviVec : leviVec.multiply(-1);
-        Vec3d minLevitation = leviVec.multiply(0.05);
-        for (Entity entity : entities) {
-            double distance = entity.getPos().distanceTo(maxPos);
-            double speedK = Math.max(0, (length - distance) / length);
-            Vec3d speedVec = minLevitation.multiply(1 + 2 * speedK);
-
-            applySpeed(world, entity, speedVec);
-        }
-    }
-
-    public static void applySpeed(World world, Entity entity, Vec3d speedVec) {
-        Vec3d oldVelocity = entity.getVelocity();
-        Vec3d newVelocity = oldVelocity.add(speedVec);
-        entity.setVelocity(newVelocity);
-
-        if (!world.isClient && entity instanceof ServerPlayerEntity player && player.velocityModified) {
-            player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player));
-            player.velocityModified = false;
-            player.setVelocity(oldVelocity);
-        }
-    }
-
-    private void tickParticles(World world, BlockPos startPos, BlockPos targetPos, boolean isPushing) {
-        LightSubtype lightType = isPushing ? LightSubtype.PUSHING : LightSubtype.ATTRACT;
-        Vec3d target = targetPos.toCenterPos();
-
-        BlockPos.iterate(startPos, targetPos).forEach(blockPos -> {
-            if (blockPos.equals(targetPos)) return;
-            Vec3d centerPos = blockPos.toCenterPos();
-            Vec3d moveVec = target.subtract(centerPos);
-
-            LightParticleEffect effect = new LightParticleEffect(EtherParticleTypes.LIGHT, lightType, moveVec);
-            effect.spawnParticles(world, 1, 0.5, centerPos);
-        });
     }
 
     @Override

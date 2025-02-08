@@ -1,7 +1,6 @@
 package ru.feytox.etherology.block.levitator;
 
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -11,15 +10,14 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
+import ru.feytox.etherology.registry.block.EBlocks;
 import ru.feytox.etherology.util.misc.RegistrableBlock;
-
-import java.util.Map;
 
 import static net.minecraft.state.property.Properties.POWER;
 import static net.minecraft.state.property.Properties.POWERED;
@@ -68,8 +66,42 @@ public class LevitatorBlock extends FacingBlock implements RegistrableBlock, Blo
         int power = world.getReceivedRedstonePower(pos);
         if (oldPower == power) return;
 
-        if (oldPower == 0 || power == 0) world.setBlockState(pos, state.with(POWERED, power > 0).with(POWER, power));
-        else world.setBlockState(pos, state.with(POWER, power));
+        state = state.with(POWER, power);
+        if (oldPower == 0 || power == 0) state = state.with(POWERED, power > 0);
+        world.setBlockState(pos, state);
+    }
+
+    @Override
+    protected void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (newState.isOf(state.getBlock()))
+            updateLevitation(world, newState, pos);
+
+        super.onStateReplaced(state, world, pos, newState, moved);
+    }
+
+    public static void updateLevitation(WorldAccess world, BlockState state, BlockPos pos) {
+        var length = state.get(POWER);
+        var direction = state.get(FACING).getOpposite();
+        var isPushing = state.get(PUSHING);
+
+        var placeState = hasLevitation(state)
+                ? EBlocks.LEVITATION_AIR.getDefaultState().with(LevitationAirBlock.PUSHING, isPushing).with(LevitationAirBlock.DIRECTION, direction)
+                : Blocks.AIR.getDefaultState();
+        var currentPos = pos.mutableCopy();
+
+        for (int i = 0; i <= length; i++) {
+            currentPos.move(direction);
+            var currentState = world.getBlockState(currentPos);
+            if (!currentState.isAir() && !currentState.isOf(EBlocks.LEVITATION_AIR))
+            {
+                if (currentState.isSolidBlock(world, currentPos))
+                    break;
+                continue;
+            }
+
+            if (i < length || placeState.isAir())
+                world.setBlockState(currentPos, placeState, Block.NOTIFY_ALL);
+        }
     }
 
     @Nullable
@@ -94,5 +126,9 @@ public class LevitatorBlock extends FacingBlock implements RegistrableBlock, Blo
     @Override
     protected MapCodec<? extends FacingBlock> getCodec() {
         return CODEC;
+    }
+
+    public static boolean hasLevitation(BlockState state) {
+        return state.get(WITH_FUEL) && state.get(POWERED);
     }
 }
