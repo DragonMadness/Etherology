@@ -4,6 +4,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.enums.BlockFace;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -124,12 +125,20 @@ public class EtherealChannel extends Block implements RegistrableBlock, BlockEnt
 
     public boolean isNeighborOutput(BlockView world, BlockPos pos, Direction direction) {
         var checkPos = pos.add(direction.getVector());
-        if (world.getBlockState(checkPos).isOf(Blocks.LEVER))
+        var checkState = world.getBlockState(checkPos);
+        if (checkState.isOf(Blocks.LEVER) && getLeverDirection(checkState).equals(direction))
             return true;
         if (!(world.getBlockEntity(checkPos) instanceof EtherStorage storage))
             return false;
 
         return storage.isOutputSide(direction.getOpposite());
+    }
+
+    private Direction getLeverDirection(BlockState leverState) {
+        var face = leverState.get(LeverBlock.FACE);
+        if (face.equals(BlockFace.WALL))
+            return leverState.get(LeverBlock.FACING);
+        return face.equals(BlockFace.FLOOR) ? Direction.UP : Direction.DOWN;
     }
 
     public BlockState getFacingState(BlockState state, int inputCount) {
