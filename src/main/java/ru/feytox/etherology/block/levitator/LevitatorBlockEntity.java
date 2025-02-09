@@ -27,11 +27,11 @@ public class LevitatorBlockEntity extends TickableBlockEntity implements EtherSt
 
     private static final double MAX_SPEED = 0.35;
     private static final double DELTA_SPEED = 0.12;
-    private static final double RESISTANCE = 0.3;
+    private static final double RESISTANCE = 0.4;
     private static final double SNEAKING_MULTIPLIER = 0.4;
     private static final double JUMPING_MULTIPLIER = 0.7;
-    private static final double FALL_REDUCTION_MULTIPLIER = 0.6;
-    private static final double REDUCTION_END = 0.1;
+    private static final double FALL_REDUCTION_MULTIPLIER = 0.45;
+    private static final double REDUCTION_END = 0.082;
 
     private static final int FUEL_TIME = 100;
     private int fuel = 0;
