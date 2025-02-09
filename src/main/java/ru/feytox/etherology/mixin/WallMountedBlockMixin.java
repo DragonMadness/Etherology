@@ -9,6 +9,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.WorldView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import ru.feytox.etherology.registry.block.EBlocks;
 
 @Mixin(WallMountedBlock.class)
 public class WallMountedBlockMixin {
@@ -18,6 +19,6 @@ public class WallMountedBlockMixin {
         if (original.call(world, pos, direction))
             return true;
 
-        return ((WallMountedBlock) (Object) this) instanceof LeverBlock;
+        return ((WallMountedBlock) (Object) this) instanceof LeverBlock && world.getBlockState(pos.offset(direction)).isOf(EBlocks.ETHEREAL_CHANNEL);
     }
 }
