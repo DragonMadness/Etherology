@@ -14,9 +14,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
-import ru.feytox.etherology.registry.block.EBlocks;
 import ru.feytox.etherology.util.misc.RegistrableBlock;
 
 import static net.minecraft.state.property.Properties.POWER;
@@ -69,39 +67,6 @@ public class LevitatorBlock extends FacingBlock implements RegistrableBlock, Blo
         state = state.with(POWER, power);
         if (oldPower == 0 || power == 0) state = state.with(POWERED, power > 0);
         world.setBlockState(pos, state);
-    }
-
-    @Override
-    protected void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (newState.isOf(state.getBlock()))
-            updateLevitation(world, newState, pos);
-
-        super.onStateReplaced(state, world, pos, newState, moved);
-    }
-
-    public static void updateLevitation(WorldAccess world, BlockState state, BlockPos pos) {
-        var length = state.get(POWER);
-        var direction = state.get(FACING).getOpposite();
-        var isPushing = state.get(PUSHING);
-
-        var placeState = hasLevitation(state)
-                ? EBlocks.LEVITATION_AIR.getDefaultState().with(LevitationAirBlock.PUSHING, isPushing).with(LevitationAirBlock.DIRECTION, direction)
-                : Blocks.AIR.getDefaultState();
-        var currentPos = pos.mutableCopy();
-
-        for (int i = 0; i <= length; i++) {
-            currentPos.move(direction);
-            var currentState = world.getBlockState(currentPos);
-            if (!currentState.isAir() && !currentState.isOf(EBlocks.LEVITATION_AIR))
-            {
-                if (currentState.isSolidBlock(world, currentPos))
-                    break;
-                continue;
-            }
-
-            if (i < length || placeState.isAir())
-                world.setBlockState(currentPos, placeState, Block.NOTIFY_ALL);
-        }
     }
 
     @Nullable

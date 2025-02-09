@@ -39,7 +39,6 @@ import ru.feytox.etherology.block.jewelryTable.JewelryTable;
 import ru.feytox.etherology.block.jug.JugBlock;
 import ru.feytox.etherology.block.jug.JugBlockEntity;
 import ru.feytox.etherology.block.jug.JugType;
-import ru.feytox.etherology.block.levitator.LevitationAirBlock;
 import ru.feytox.etherology.block.levitator.LevitatorBlock;
 import ru.feytox.etherology.block.levitator.LevitatorBlockEntity;
 import ru.feytox.etherology.block.matrix.MatrixBlock;
@@ -224,8 +223,6 @@ public class EBlocks {
             EIdentifier.of("seal_block_entity"),
             BlockEntityType.Builder.create(SealBlockEntity::new, SEALS).build()
     );
-
-    public static final Block LEVITATION_AIR = register("levitation_air", new LevitationAirBlock()).withoutItem();
 
     public static void registerAll() {
         DecoBlocks.registerAll();
