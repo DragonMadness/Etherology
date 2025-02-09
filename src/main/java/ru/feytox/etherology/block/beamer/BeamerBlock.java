@@ -1,11 +1,9 @@
 package ru.feytox.etherology.block.beamer;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.component.type.SuspiciousStewEffectsComponent;
-import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.registry.tag.BlockTags;
@@ -40,7 +38,7 @@ public class BeamerBlock extends PlantBlock implements Fertilizable, Registrable
     private static final VoxelShape[] AGE_TO_SHAPE;
 
     public BeamerBlock() {
-        super(Settings.create().mapColor(MapColor.DARK_GREEN).nonOpaque().ticksRandomly().sounds(BlockSoundGroup.GRASS).noCollision().offset(AbstractBlock.OffsetType.XZ).breakInstantly());
+        super(Settings.create().mapColor(MapColor.DARK_GREEN).nonOpaque().pistonBehavior(PistonBehavior.DESTROY).ticksRandomly().sounds(BlockSoundGroup.GRASS).noCollision().offset(AbstractBlock.OffsetType.XZ).breakInstantly());
         this.setDefaultState(getDefaultState()
                 .with(AGE, 0)
                 .with(IS_FARMLAND, false)

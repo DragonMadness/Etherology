@@ -3,6 +3,8 @@ package ru.feytox.etherology.block.forestLantern;
 import com.mojang.serialization.MapCodec;
 import lombok.val;
 import net.minecraft.block.*;
+import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
@@ -21,6 +23,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
+import ru.feytox.etherology.data.EBlockTags;
 import ru.feytox.etherology.registry.block.DecoBlocks;
 import ru.feytox.etherology.util.event.PlayerJumpCallback;
 import ru.feytox.etherology.util.misc.RegistrableBlock;
@@ -42,7 +45,7 @@ public class ForestLanternBlock extends HorizontalFacingBlock implements Registr
     private static final int GROW_FREQUENCY = 30;
 
     public ForestLanternBlock() {
-        super(Settings.copy(Blocks.BROWN_MUSHROOM_BLOCK).notSolid().sounds(BlockSoundGroup.GRASS).luminance(value -> 8).postProcess((a, b, c) -> true).emissiveLighting((a, b, c) -> true));
+        super(Settings.copy(Blocks.BROWN_MUSHROOM_BLOCK).notSolid().sounds(BlockSoundGroup.GRASS).pistonBehavior(PistonBehavior.DESTROY).luminance(value -> 8).postProcess((a, b, c) -> true).emissiveLighting((a, b, c) -> true));
         setDefaultState(getDefaultState().with(FACING, Direction.NORTH).with(AGE, MAX_AGE));
     }
 
@@ -52,6 +55,7 @@ public class ForestLanternBlock extends HorizontalFacingBlock implements Registr
         return SHAPES.get(state.get(FACING))[age];
     }
 
+    // TODO: 09.02.2025 optimize?
     public static void registerJumpEvent() {
         PlayerJumpCallback.BEFORE_JUMP.register(player -> {
             var world = player.getWorld();
@@ -107,13 +111,21 @@ public class ForestLanternBlock extends HorizontalFacingBlock implements Registr
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
         var direction = state.get(FACING);
-        return canPlaceAt(world, pos, direction);
+        return canPlaceAt(world, pos, direction, state.get(AGE));
     }
 
-    private static boolean canPlaceAt(WorldView world, BlockPos pos, Direction facing) {
+    private static boolean canPlaceAt(WorldView world, BlockPos pos, Direction facing, int age) {
         var logPos = pos.offset(facing.getOpposite());
         var logState = world.getBlockState(logPos);
-        return logState.isSideSolidFullSquare(world, logPos, facing);
+        if (age == MAX_AGE)
+            return logState.isSideSolidFullSquare(world, logPos, facing);
+
+        return logState.isIn(EBlockTags.PEACH_LOGS);
+    }
+
+    @Override
+    protected float calcBlockBreakingDelta(BlockState state, PlayerEntity player, BlockView world, BlockPos pos) {
+        return state.get(AGE) == 0 ? 1.0f : super.calcBlockBreakingDelta(state, player, world, pos);
     }
 
     @Override
@@ -147,39 +159,6 @@ public class ForestLanternBlock extends HorizontalFacingBlock implements Registr
     @Override
     public String getBlockId() {
         return "forest_lantern";
-    }
-
-    static {
-        SHAPES = new EnumMap<>(Map.of(
-                Direction.NORTH, new VoxelShape[]{
-                        Block.createCuboidShape(4, 4, 13, 12, 12, 16),
-                        Block.createCuboidShape(5.5, 5, 11, 10.5, 11, 16),
-                        Block.createCuboidShape(5, 5, 9, 11, 12, 16),
-                        Block.createCuboidShape(4, 5, 6, 12, 14, 16),
-                        Block.createCuboidShape(2, 4, 4, 14, 16, 16)
-                },
-                Direction.SOUTH, new VoxelShape[]{
-                        Block.createCuboidShape(4, 4, 0, 12, 12, 3),
-                        Block.createCuboidShape(5.5, 5, 0, 10.5, 11, 5),
-                        Block.createCuboidShape(5, 5, 0, 11, 12, 7),
-                        Block.createCuboidShape(4, 5, 0, 12, 14, 10),
-                        Block.createCuboidShape(2, 4, 0, 14, 16, 12)
-                },
-                Direction.WEST, new VoxelShape[]{
-                        Block.createCuboidShape(13, 4, 4, 16, 12, 12),
-                        Block.createCuboidShape(11, 5, 5.5, 16, 11, 10.5),
-                        Block.createCuboidShape(9, 5, 5, 16, 12, 11),
-                        Block.createCuboidShape(6, 5, 4, 16, 14, 12),
-                        Block.createCuboidShape(4, 4, 2, 16, 16, 14)
-                },
-                Direction.EAST, new VoxelShape[]{
-                        Block.createCuboidShape(0, 4, 4, 3, 12, 12),
-                        Block.createCuboidShape(0, 5, 5.5, 5, 11, 10.5),
-                        Block.createCuboidShape(0, 5, 5, 7, 12, 11),
-                        Block.createCuboidShape(0, 5, 4, 10, 14, 12),
-                        Block.createCuboidShape(0, 4, 2, 12, 16, 14)
-                }
-        ));
     }
 
     @Override
@@ -220,7 +199,7 @@ public class ForestLanternBlock extends HorizontalFacingBlock implements Registr
     private boolean tryPlaceLantern(ServerWorld world, BlockPos pos) {
         for (var i = 0; i < 4; i++) {
             var direction = Direction.fromHorizontal(i);
-            if (!canPlaceAt(world, pos, direction))
+            if (!canPlaceAt(world, pos, direction, 0))
                 continue;
 
             world.setBlockState(pos, getDefaultState().with(AGE, 0).with(FACING, direction));
@@ -228,5 +207,38 @@ public class ForestLanternBlock extends HorizontalFacingBlock implements Registr
         }
 
         return false;
+    }
+
+    static {
+        SHAPES = new EnumMap<>(Map.of(
+                Direction.NORTH, new VoxelShape[]{
+                        Block.createCuboidShape(4, 4, 13, 12, 12, 16),
+                        Block.createCuboidShape(5.5, 5, 11, 10.5, 11, 16),
+                        Block.createCuboidShape(5, 5, 9, 11, 12, 16),
+                        Block.createCuboidShape(4, 5, 6, 12, 14, 16),
+                        Block.createCuboidShape(2, 4, 4, 14, 16, 16)
+                },
+                Direction.SOUTH, new VoxelShape[]{
+                        Block.createCuboidShape(4, 4, 0, 12, 12, 3),
+                        Block.createCuboidShape(5.5, 5, 0, 10.5, 11, 5),
+                        Block.createCuboidShape(5, 5, 0, 11, 12, 7),
+                        Block.createCuboidShape(4, 5, 0, 12, 14, 10),
+                        Block.createCuboidShape(2, 4, 0, 14, 16, 12)
+                },
+                Direction.WEST, new VoxelShape[]{
+                        Block.createCuboidShape(13, 4, 4, 16, 12, 12),
+                        Block.createCuboidShape(11, 5, 5.5, 16, 11, 10.5),
+                        Block.createCuboidShape(9, 5, 5, 16, 12, 11),
+                        Block.createCuboidShape(6, 5, 4, 16, 14, 12),
+                        Block.createCuboidShape(4, 4, 2, 16, 16, 14)
+                },
+                Direction.EAST, new VoxelShape[]{
+                        Block.createCuboidShape(0, 4, 4, 3, 12, 12),
+                        Block.createCuboidShape(0, 5, 5.5, 5, 11, 10.5),
+                        Block.createCuboidShape(0, 5, 5, 7, 12, 11),
+                        Block.createCuboidShape(0, 5, 4, 10, 14, 12),
+                        Block.createCuboidShape(0, 4, 2, 12, 16, 14)
+                }
+        ));
     }
 }

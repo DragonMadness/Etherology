@@ -5,6 +5,7 @@ import net.minecraft.block.AbstractPlantStemBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MapColor;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.world.ServerWorld;
@@ -32,7 +33,7 @@ public class ThujaBlock extends AbstractPlantStemBlock implements RegistrableBlo
     private static final int MAX_LENGTH = 5;
 
     public ThujaBlock() {
-        super(Settings.create().mapColor(MapColor.EMERALD_GREEN).ticksRandomly().noCollision().breakInstantly().sounds(BlockSoundGroup.GRASS), Direction.UP, OUTLINE_SHAPE, false, 0.1);
+        super(Settings.create().mapColor(MapColor.EMERALD_GREEN).pistonBehavior(PistonBehavior.DESTROY).ticksRandomly().noCollision().breakInstantly().sounds(BlockSoundGroup.GRASS), Direction.UP, OUTLINE_SHAPE, false, 0.1);
         setDefaultState(getDefaultState()
                 .with(SHAPE, ThujaShape.BUSH)
         );
