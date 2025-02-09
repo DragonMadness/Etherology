@@ -25,6 +25,8 @@ public class SedimentaryBlockClient {
         SedimentaryStone.executeOnStone(state, stone -> {
             var sealType = stone.getSealType();
             var sealOptional = blockEntity.getAndCacheSeal(world, blockPos, sealType);
+            if (sealOptional.isEmpty())
+                blockEntity.setSearchingStopped(true);
             sealOptional.ifPresent(seal -> tickParticlesAroundBlock(world, seal, blockPos));
         });
     }

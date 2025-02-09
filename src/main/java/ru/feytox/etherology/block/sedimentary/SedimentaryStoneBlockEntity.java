@@ -1,5 +1,7 @@
 package ru.feytox.etherology.block.sedimentary;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
@@ -37,6 +39,8 @@ public class SedimentaryStoneBlockEntity extends TickableBlockEntity implements 
     @Nullable
     private EssenceSupplier cachedSeal;
     private float points = 0;
+    @Getter @Setter
+    private boolean isSearchingStopped;
 
     public SedimentaryStoneBlockEntity(BlockPos pos, BlockState state) {
         this(pos, state, null);
@@ -92,7 +96,8 @@ public class SedimentaryStoneBlockEntity extends TickableBlockEntity implements 
 
     @Override
     public void serverTick(ServerWorld world, BlockPos blockPos, BlockState state) {
-        if (!state.get(SedimentaryStone.POWERED)) return;
+        if (!state.get(SedimentaryStone.POWERED))
+            return;
         SedimentaryStone.executeOnStone(state, stone -> consumingTick(world, stone, state));
     }
 

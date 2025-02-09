@@ -1,5 +1,7 @@
 package ru.feytox.etherology.block.arcanelightDetector;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
@@ -19,6 +21,9 @@ public class ArcanelightDetectorBlockEntity extends TickableBlockEntity implemen
 
     @Nullable
     private EssenceSupplier cachedSeal;
+
+    @Getter @Setter
+    private boolean isSearchingStopped;
 
     public ArcanelightDetectorBlockEntity(BlockPos pos, BlockState state) {
         super(ARCANELIGHT_DETECTOR_BLOCK_ENTITY, pos, state);

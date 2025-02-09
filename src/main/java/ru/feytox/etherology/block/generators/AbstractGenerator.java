@@ -22,6 +22,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import ru.feytox.etherology.magic.seal.EssenceConsumer;
 import ru.feytox.etherology.registry.item.EItems;
 import ru.feytox.etherology.util.misc.RegistrableBlock;
 
@@ -64,6 +65,12 @@ public abstract class AbstractGenerator extends FacingBlock implements Registrab
         }
 
         return ItemActionResult.SUCCESS;
+    }
+
+    @Override
+    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+        super.neighborUpdate(state, world, pos, sourceBlock, sourcePos, notify);
+        EssenceConsumer.activateSearching(world, pos, AbstractGeneratorBlockEntity.class);
     }
 
     @Override

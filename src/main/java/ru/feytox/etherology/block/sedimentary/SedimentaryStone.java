@@ -35,6 +35,7 @@ import net.minecraft.world.WorldView;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import ru.feytox.etherology.Etherology;
+import ru.feytox.etherology.magic.seal.EssenceConsumer;
 import ru.feytox.etherology.magic.seal.SealType;
 
 import java.util.List;
@@ -70,8 +71,10 @@ public class SedimentaryStone extends Block implements BlockEntityProvider {
 
     @Override
     protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
-        if (world.isClient || state.get(POWERED) == world.isReceivingRedstonePower(pos)) return;
+        if (world.isClient || state.get(POWERED) == world.isReceivingRedstonePower(pos))
+            return;
         world.setBlockState(pos, state.cycle(POWERED), NOTIFY_LISTENERS);
+        EssenceConsumer.activateSearching(world, pos, SedimentaryStoneBlockEntity.class);
     }
 
     @Override

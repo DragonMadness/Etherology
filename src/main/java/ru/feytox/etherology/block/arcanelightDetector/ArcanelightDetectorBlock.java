@@ -13,6 +13,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import ru.feytox.etherology.magic.seal.EssenceConsumer;
 import ru.feytox.etherology.util.misc.RegistrableBlock;
 
 import static ru.feytox.etherology.registry.block.EBlocks.ARCANELIGHT_DETECTOR_BLOCK_ENTITY;
@@ -53,6 +54,12 @@ public class ArcanelightDetectorBlock extends Block implements BlockEntityProvid
     @Override
     public boolean emitsRedstonePower(BlockState state) {
         return true;
+    }
+
+    @Override
+    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+        super.neighborUpdate(state, world, pos, sourceBlock, sourcePos, notify);
+        EssenceConsumer.activateSearching(world, pos, ArcanelightDetectorBlockEntity.class);
     }
 
     @Nullable
