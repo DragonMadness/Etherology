@@ -6,6 +6,8 @@ import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.component.type.SuspiciousStewEffectsComponent;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
@@ -43,6 +45,15 @@ public class BeamerBlock extends PlantBlock implements Fertilizable, Registrable
                 .with(AGE, 0)
                 .with(IS_FARMLAND, false)
         );
+    }
+
+    @Override
+    protected List<ItemStack> getDroppedStacks(BlockState state, LootContextParameterSet.Builder builder) {
+        if (state.get(AGE) == MAX_AGE) {
+            return List.of(new ItemStack(DecoBlockItems.BEAM_FRUIT));
+        } else {
+            return List.of(new ItemStack(DecoBlockItems.BEAMER_SEEDS));
+        }
     }
 
     @Override
