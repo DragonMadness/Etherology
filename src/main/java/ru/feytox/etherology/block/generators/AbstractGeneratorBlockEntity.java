@@ -44,7 +44,6 @@ public abstract class AbstractGeneratorBlockEntity extends TickableBlockEntity i
     private EssenceSupplier cachedSeal;
     @Getter @Setter
     private boolean isSearchingStopped;
-    private int ticksUntilSealCheck = 0;
 
     public AbstractGeneratorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -127,11 +126,8 @@ public abstract class AbstractGeneratorBlockEntity extends TickableBlockEntity i
         if (state.get(STALLED) || isMess) return;
 
         boolean isInSeal = getCachedSeal().isPresent();
-        if (ticksUntilSealCheck > 0) {
-            ticksUntilSealCheck--;
-        } else {
+        if (world.getTime() % 20 == 0) {
             isInSeal = isInSeal(world);
-            ticksUntilSealCheck = 20;
         }
 
         Random random = world.getRandom();
