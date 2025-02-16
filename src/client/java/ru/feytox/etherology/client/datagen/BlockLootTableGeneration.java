@@ -11,6 +11,7 @@ import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.predicate.StatePredicate;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.state.property.IntProperty;
+import ru.feytox.etherology.block.beamer.BeamerBlock;
 import ru.feytox.etherology.block.etherealChannel.EtherealChannel;
 import ru.feytox.etherology.block.forestLantern.ForestLanternBlock;
 import ru.feytox.etherology.registry.block.AutoBlockLootTable;
@@ -56,6 +57,11 @@ public class BlockLootTableGeneration extends FabricBlockLootTableProvider {
         addPottedPlantDrops(POTTED_THUJA);
         addPottedPlantDrops(POTTED_PEACH_SAPLING);
         addDrop(FOREST_LANTERN, dropsWithProperty(FOREST_LANTERN, ForestLanternBlock.AGE, ForestLanternBlock.MAX_AGE));
+        addDrop(BEAMER, LootTable.builder().pool(LootPool.builder()
+                .with(ItemEntry.builder(DecoBlockItems.BEAM_FRUIT)
+                        .conditionally(BlockStatePropertyLootCondition.builder(BEAMER)
+                                .properties(StatePredicate.Builder.create().exactMatch(BeamerBlock.AGE, BeamerBlock.MAX_AGE)))
+                        .alternatively(ItemEntry.builder(DecoBlockItems.BEAMER_SEEDS)))));
 
         addDrop(LIGHTELET, this::shortPlantDrops);
     }

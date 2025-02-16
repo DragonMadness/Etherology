@@ -3,15 +3,28 @@
   "pools": [
     {
       "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "etherology:beam_fruit"
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "conditions": [
+                {
+                  "block": "etherology:beamer",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "age": "3"
+                  }
+                }
+              ],
+              "name": "etherology:beam_fruit"
+            },
+            {
+              "type": "minecraft:item",
+              "name": "etherology:beamer_seeds"
+            }
+          ]
         }
       ],
       "rolls": 1.0
